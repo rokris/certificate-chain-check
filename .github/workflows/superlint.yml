@@ -23,3 +23,6 @@
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               VALIDATE_JSCPD: false
               VALIDATE_PYTHON_PYLINT: false
+              FIX_PYTHON_ISORT: true
+              FIX_PYTHON_BLACK: true
+              FIX_MARKDOWN_PRETTIER: true
