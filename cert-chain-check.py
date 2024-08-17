@@ -38,19 +38,16 @@ def validate_certificate_chain(context, server_address, server_port):
     Returns the loaded certificate object if successful.
     Raises SSL errors if certificate validation fails.
     """
+    # Sett opp SSL-konteksten
     with context.wrap_socket(socket.socket(), server_hostname=server_address) as s:
         s.connect((server_address, server_port))
         cert_der = ssl.DER_cert_to_PEM_cert(s.getpeercert(binary_form=True))
 
-        # Validate the certificate chain
-        cert_store = context.get_ca_certs()
+        # Last inn og returner det mottatte sertifikatet
         cert = load_pem_x509_certificate(cert_der.encode(), default_backend())
-        cert_store.append(cert)
-        context.verify_mode = ssl.CERT_REQUIRED
-        context.check_hostname = False  # Disable default hostname validation
-        context.cert_store = cert_store
 
     return cert
+
 
 
 def validate_hostname(cert, server_address):
@@ -83,6 +80,10 @@ def check_certificate_chain(server_addresses, server_port):
     try:
         # Create an SSL context and connect to each server
         context = ssl.create_default_context(cafile=certifi.where())
+        context.minimum_version = ssl.TLSVersion.TLSv1_2  # Håndheve minimum TLSv1.2
+        context.options |= ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3  # Deaktiver SSLv2 og SSLv3
+        context.verify_mode = ssl.CERT_REQUIRED  # Krev serversertifikatvalidering
+        context.check_hostname = True  # Verifiser vertsnavnet mot sertifikatet
 
         for server_address in server_addresses:
             try:
