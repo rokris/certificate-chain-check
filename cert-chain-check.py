@@ -59,14 +59,20 @@ def validate_hostname(cert, server_address):
     Raises SSL errors if hostname validation fails.
     """
     try:
-        san_extension = cert.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
+        san_extension = cert.extensions.get_extension_for_oid(
+            ExtensionOID.SUBJECT_ALTERNATIVE_NAME
+        )
         cert_alt_names = san_extension.value.get_values_for_type(DNSName)
         for alt_name in cert_alt_names:
             if fnmatch.fnmatch(server_address, alt_name):
                 return True
-        raise ssl.CertificateError(f"Hostname mismatch: expected {server_address}, got {cert_alt_names}")
+        raise ssl.CertificateError(
+            f"Hostname mismatch: expected {server_address}, got {cert_alt_names}"
+        )
     except ExtensionNotFound:
-        raise ssl.CertificateError("Certificate does not contain Subject Alternative Name (SAN) extension")
+        raise ssl.CertificateError(
+            "Certificate does not contain Subject Alternative Name (SAN) extension"
+        )
 
 
 def check_certificate_chain(server_addresses, server_port):
@@ -88,9 +94,13 @@ def check_certificate_chain(server_addresses, server_port):
             except ssl.SSLError as e:
                 error_message = str(e)
                 if "unable to get local issuer certificate" in error_message:
-                    print_error(f"Certificate or chain validation failed for {server_address}: The local issuer certificate is not available")
+                    print_error(
+                        f"Certificate or chain validation failed for {server_address}: The local issuer certificate is not available"
+                    )
                 else:
-                    print_error(f"Certificate or chain validation failed for {server_address}: {error_message}")
+                    print_error(
+                        f"Certificate or chain validation failed for {server_address}: {error_message}"
+                    )
 
             except ssl.CertificateError as e:
                 error_message = str(e)
@@ -106,16 +116,18 @@ def check_certificate_chain(server_addresses, server_port):
         print_error("Invalid server address or hostname not known")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Get the server addresses from command-line arguments
     server_addresses = sys.argv[1:]
     server_port = 443
     # Check if no command-line arguments are provided
     if not server_addresses:
         # Prompt for server addresses if none are provided
-        server_addresses = input("Enter the server addresses (separated multiple hosts with spaces): ").split()
+        server_addresses = input(
+            "Enter the server addresses (separated multiple hosts with spaces): "
+        ).split()
         server_port = input("Enter the server port (default port is 443): ")
-        if server_port: 
+        if server_port:
             server_port = int(server_port)
         else:
             server_port = 443
