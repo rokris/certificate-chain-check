@@ -3,6 +3,7 @@
 import socket
 import ssl
 import sys
+import re
 
 import certifi
 import colorama
@@ -12,7 +13,6 @@ from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509.oid import ExtensionOID
 from cryptography.x509 import ExtensionNotFound, DNSName
-from typing import Union
 
 # Initialiser colorama
 colorama.init(autoreset=True)
@@ -119,19 +119,49 @@ def check_certificate_chain(server_addresses, server_port):
         print_error("Invalid server address or hostname not known")
 
 
+def parse_address(address: str):
+    """
+    Parses the server address input to extract the hostname and port.
+    Handles formats like 'example.com', 'example.com:443', and 'https://example.com'.
+    Returns a tuple (hostname, port).
+    """
+    # Remove the 'https://' prefix if present
+    if address.lower().startswith("https://"):
+        address = address[len("https://"):]
+
+    # Split into hostname and port
+    if ':' in address:
+        hostname, port_str = address.rsplit(':', 1)
+        port = int(port_str)
+    else:
+        hostname = address
+        port = 443  # Default port
+
+    return hostname, port
+
+
 if __name__ == "__main__":
     # Get the server addresses from command-line arguments
     server_addresses = sys.argv[1:]
-    server_port: Union[int, str] = 443  # Default value as an int
-
-    # Check if no command-line arguments are provided
+    
     if not server_addresses:
         # Prompt for server addresses if none are provided
-        server_addresses = input(
-            "Enter the server addresses (separated multiple hosts with spaces): "
+        server_addresses_input = input(
+            "Enter the server addresses (separated multiple hosts with spaces, formats: address, address:port, https://address): "
         ).split()
-        server_port_input = input("Enter the server port (default port is 443): ")
-        if server_port_input:
-            server_port = int(server_port_input)  # Convert to int if input is provided
+
+        # Parse addresses
+        server_addresses = []
+        for address in server_addresses_input:
+            hostname, port = parse_address(address)
+            server_addresses.append(hostname)
+            server_port = port  # Update port from input
+    else:
+        # Parse addresses from command-line arguments
+        server_addresses = []
+        for address in server_addresses:
+            hostname, port = parse_address(address)
+            server_addresses.append(hostname)
+            server_port = port  # Update port from input
 
     check_certificate_chain(server_addresses, server_port)
