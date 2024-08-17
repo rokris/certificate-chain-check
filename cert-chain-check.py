@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
 
-import sys
-import ssl
 import socket
+import ssl
+import sys
+
 import certifi
+import colorama
 import fnmatch
+from colorama import Fore, Style
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509.oid import ExtensionOID
 from cryptography.x509 import ExtensionNotFound, DNSName
 
-# ANSI color codes for colorizing the output
-COLOR_RED = "\033[91m"
-COLOR_GREEN = "\033[92m"
-COLOR_RESET = "\033[0m"
+# Initialiser colorama
+colorama.init(autoreset=True)
+
+# ANSI escape-koder for farge
+RED = Fore.RED
+GREEN = Fore.GREEN
+RESET = Style.RESET_ALL
 
 
-def print_colored(text, color):
-    """
-    Prints the given text in the specified color.
-    """
-    print(color + text + COLOR_RESET)
+def print_error(message):
+    """Skriver ut en feilmelding i rød tekst."""
+    print(f"{RED}{message}{RESET}")
+
+
+def print_success(message):
+    """Skriver ut en suksessmelding i grønn tekst."""
+    print(f"{GREEN}{message}{RESET}")
 
 
 def validate_certificate_chain(context, server_address, server_port):
@@ -74,27 +83,27 @@ def check_certificate_chain(server_addresses, server_port):
                 cert = validate_certificate_chain(context, server_address, server_port)
                 validate_hostname(cert, server_address)
 
-                print_colored(f"Certificate and chain are valid for {server_address}", COLOR_GREEN)
+                print_success(f"Certificate and chain are valid for {server_address}")
 
             except ssl.SSLError as e:
                 error_message = str(e)
                 if "unable to get local issuer certificate" in error_message:
-                    print_colored(f"Certificate or chain validation failed for {server_address}: The local issuer certificate is not available", COLOR_RED)
+                    print_error(f"Certificate or chain validation failed for {server_address}: The local issuer certificate is not available")
                 else:
-                    print_colored(f"Certificate or chain validation failed for {server_address}: {error_message}", COLOR_RED)
+                    print_error(f"Certificate or chain validation failed for {server_address}: {error_message}")
 
             except ssl.CertificateError as e:
                 error_message = str(e)
-                print_colored(f"Hostname validation failed for {server_address}", COLOR_RED)
+                print_error(f"Hostname validation failed for {server_address}")
 
             except ConnectionResetError:
-                print_colored(f"Connection reset by peer for {server_address}", COLOR_RED)
+                print_error(f"Connection reset by peer for {server_address}")
 
             except ConnectionRefusedError:
-                print_colored(f"Connection refused by peer for {server_address}", COLOR_RED)
+                print_error(f"Connection refused by peer for {server_address}")
 
     except socket.gaierror:
-        print_colored("Invalid server address or hostname not known", COLOR_RED)
+        print_error("Invalid server address or hostname not known")
 
 
 if __name__ == '__main__':
