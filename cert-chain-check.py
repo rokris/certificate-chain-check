@@ -3,7 +3,6 @@
 import socket
 import ssl
 import sys
-import re
 
 import certifi
 import colorama
@@ -141,25 +140,25 @@ def parse_address(address: str):
 
 
 if __name__ == "__main__":
+    # Initialize server_addresses and server_port
+    server_addresses = []
+    server_port = 443  # Default value
+
     # Get the server addresses from command-line arguments
-    server_addresses = sys.argv[1:]
-    
-    if not server_addresses:
+    if len(sys.argv) > 1:
+        # Parse addresses from command-line arguments
+        for address in sys.argv[1:]:
+            hostname, port = parse_address(address)
+            server_addresses.append(hostname)
+            server_port = port  # Update port from input
+    else:
         # Prompt for server addresses if none are provided
         server_addresses_input = input(
             "Enter the server addresses (separated multiple hosts with spaces, formats: address, address:port, https://address): "
         ).split()
 
         # Parse addresses
-        server_addresses = []
         for address in server_addresses_input:
-            hostname, port = parse_address(address)
-            server_addresses.append(hostname)
-            server_port = port  # Update port from input
-    else:
-        # Parse addresses from command-line arguments
-        server_addresses = []
-        for address in server_addresses:
             hostname, port = parse_address(address)
             server_addresses.append(hostname)
             server_port = port  # Update port from input
