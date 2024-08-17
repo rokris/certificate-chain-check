@@ -12,6 +12,7 @@ from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509.oid import ExtensionOID
 from cryptography.x509 import ExtensionNotFound, DNSName
+from typing import Union
 
 # Initialiser colorama
 colorama.init(autoreset=True)
@@ -121,16 +122,16 @@ def check_certificate_chain(server_addresses, server_port):
 if __name__ == "__main__":
     # Get the server addresses from command-line arguments
     server_addresses = sys.argv[1:]
-    server_port = 443
+    server_port: Union[int, str] = 443  # Default value as an int
+
     # Check if no command-line arguments are provided
     if not server_addresses:
         # Prompt for server addresses if none are provided
         server_addresses = input(
             "Enter the server addresses (separated multiple hosts with spaces): "
         ).split()
-        server_port = input("Enter the server port (default port is 443): ")
-        if server_port:
-            server_port = int(server_port)
-        else:
-            server_port = 443
+        server_port_input = input("Enter the server port (default port is 443): ")
+        if server_port_input:
+            server_port = int(server_port_input)  # Convert to int if input is provided
+
     check_certificate_chain(server_addresses, server_port)
