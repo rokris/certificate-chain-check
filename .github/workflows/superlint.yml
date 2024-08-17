@@ -1,29 +1,29 @@
 ---
+name: Lint
+on:
+  push: null
+  pull_request: null
+permissions: {}
+jobs:
+  build:
     name: Lint
-    on:
-      push: null
-      pull_request: null
-    permissions: {}
-    jobs:
-      build:
-        name: Lint
-        runs-on: ubuntu-latest
-        permissions:
-          contents: read
-          packages: read
-          statuses: write
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
-          - name: Super-linter
-            uses: super-linter/super-linter@v7.0.0
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              VALIDATE_JSCPD: false
-              VALIDATE_PYTHON_PYLINT: false
-              FIX_PYTHON_ISORT: true
-              FIX_PYTHON_BLACK: true
-              FIX_MARKDOWN_PRETTIER: true
-              FIX_YAML_PRETTIER: true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Super-linter
+        uses: super-linter/super-linter@v7.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JSCPD: false
+          VALIDATE_PYTHON_PYLINT: false
+          FIX_PYTHON_ISORT: true
+          FIX_PYTHON_BLACK: true
+          FIX_MARKDOWN_PRETTIER: true
+          FIX_YAML_PRETTIER: true
