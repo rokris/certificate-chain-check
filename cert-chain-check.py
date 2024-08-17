@@ -95,7 +95,8 @@ def check_certificate_chain(server_addresses, server_port):
                 error_message = str(e)
                 if "unable to get local issuer certificate" in error_message:
                     print_error(
-                        f"Certificate or chain validation failed for {server_address}: The local issuer certificate is not available"
+                        f"Certificate or chain validation failed for {server_address}: "
+                        "The local issuer certificate is not available"
                     )
                 else:
                     print_error(
