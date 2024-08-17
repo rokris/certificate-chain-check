@@ -49,7 +49,6 @@ def validate_certificate_chain(context, server_address, server_port):
     return cert
 
 
-
 def validate_hostname(cert, server_address):
     """
     Validates the hostname of the certificate against the server address.
@@ -126,11 +125,11 @@ def parse_address(address: str):
     """
     # Remove the 'https://' prefix if present
     if address.lower().startswith("https://"):
-        address = address[len("https://"):]
+        address = address[len("https://") :]
 
     # Split into hostname and port
-    if ':' in address:
-        hostname, port_str = address.rsplit(':', 1)
+    if ":" in address:
+        hostname, port_str = address.rsplit(":", 1)
         port = int(port_str)
     else:
         hostname = address
@@ -154,7 +153,8 @@ if __name__ == "__main__":
     else:
         # Prompt for server addresses if none are provided
         server_addresses_input = input(
-            "Enter the server addresses (separated multiple hosts with spaces, formats: address, address:port, https://address): "
+            "Enter the server addresses (separated multiple hosts with spaces, "
+            "formats: address, address:port, https://address): "
         ).split()
 
         # Parse addresses
