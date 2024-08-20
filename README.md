@@ -27,7 +27,7 @@ You can run the script by providing server addresses as command-line arguments o
 ### Command-Line Usage
 
 ```bash
-./ssl_validator.py example.com example.org:8443 https://secure-site.com
+./certificate-chain-check.py example.com example.org:8443 https://secure-site.com
 ```
 
 You can specify the server address in the following formats:
@@ -43,10 +43,14 @@ You can specify the server address in the following formats:
 If you run the script without any arguments, it will prompt you to enter the server addresses:
 
 ```bash
-./ssl_validator.py
+./certificate-chain-check.py
 ```
 
-You can then enter multiple addresses separated by spaces, e.g., example.com example.org:8443 https://secure-site.com.
+You can then enter multiple addresses separated by spaces, e.g.
+
+```bash
+./certificate-chain-check.py example.com example.org:8443 https://secure-site.com
+```
 
 ### Example Output
 
