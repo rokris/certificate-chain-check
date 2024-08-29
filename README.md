@@ -9,7 +9,7 @@ This Python script validates SSL/TLS certificates for a list of server addresses
 - **TLS Version Enforcement**: Enforces a minimum of TLS 1.2, disabling older, less secure versions like SSLv2 and SSLv3.
 - **Error Handling**: Provides detailed error messages for issues such as invalid certificates, hostname mismatches, and connection problems.
 
-## Prerequisites
+## Prerequisite
 
 - **Python 3.x**
 - All required Python packages are listed in the `requirements.txt` file.
