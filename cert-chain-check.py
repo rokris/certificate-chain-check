@@ -23,12 +23,12 @@ RESET = Style.RESET_ALL
 
 
 def print_error(message):
-    """Skriver ut en feilmelding i rød tekst."""
+    """Skriver ut en feilmelding i rød tekst"""
     print(f"{RED}{message}{RESET}")
 
 
 def print_success(message):
-    """Skriver ut en suksessmelding i grønn tekst."""
+    """Skriver ut en suksessmelding i grønn tekst"""
     print(f"{GREEN}{message}{RESET}")
 
 
